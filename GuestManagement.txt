@@ -1,0 +1,249 @@
+public class GuestManagementTask {
+
+    public static void main(String[] args) {
+
+
+
+
+        // Create a hotel
+        Hotel hotel = new Hotel("My Hotel");
+
+        // Add rooms to the hotel
+        hotel.addRoom(new Room(101, 1, null, "deluxe", 100.00));
+        hotel.addRoom(new Room(102, 1, null, "deluxe", 100.00));
+        hotel.addRoom(new Room(103, 1, null, "normal", 50.00));
+        hotel.addRoom(new Room(104, 1, null, "normal", 50.00));
+        hotel.addRoom(new Room(201, 2, null, "deluxe", 100.00));
+        hotel.addRoom(new Room(202, 2, null, "deluxe", 100.00));
+        hotel.addRoom(new Room(203, 2, null, "normal", 50.00));
+        hotel.addRoom(new Room(204, 2, null, "normal", 50.00));
+
+        // Check in a guest to room 101
+        hotel.checkInGuest(new Guest(1, "Alice", "Smith", "alice@example.com"), 101);
+
+        // Check in a guest to room 202
+        hotel.checkInGuest(new Guest(2, "Bob", "Jones", "bob@example.com"), 202);
+
+        // Find the guest checked in to room 101
+        Guest guest = hotel.findGuestCheckedInRoom(101);
+
+        // Print the guest's name
+        System.out.println(guest.firstName + " " + guest.lastName);
+
+        // Get the number of guests currently checked in
+        int guestsCount = hotel.guestsCount();
+
+        // Print the number of guests currently checked in
+        System.out.println("Guests count: " + guestsCount);
+
+        // Get the total earning of the hotel today
+        double earningToday = hotel.earningToday();
+
+        // Print the total earning of the hotel today
+        System.out.println("Earning today: $" + earningToday);
+
+        // Get all guests currently checked in
+        Guest[] guests = hotel.findAllGuests();
+
+        double earning = hotel.getEarningTodayForRoomsWhereGuestIsStaying();
+
+       // Print the total earning
+        System.out.println("Earning today for rooms where guest is staying: $" + earning);
+
+
+
+        // Print the names of all guests currently checked in
+        for (Guest guest1: guests) {
+            System.out.println(guest1.firstName + " " + guest1.lastName);
+        }
+
+
+    }
+
+}
+
+public class Guest {
+
+    public long id;
+    public String firstName;
+    public String lastName;
+    public String emailId;
+
+    public Guest(long id, String firstName, String lastName, String emailId) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailId = emailId;
+    }
+
+    public Guest() {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailId = emailId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    @Override
+    public String toString() {
+        return "Guest{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailId='" + emailId + '\'' +
+                '}';
+    }
+}
+
+public class Room {
+
+    public int roomNumber;
+    public int floor;
+    public Guest checkedIn;
+    public String roomType;
+    public double pricePerDay;
+
+    public Room(int roomNumber, int floor, Guest checkedIn, String roomType, double pricePerDay) {
+        this.roomNumber = roomNumber;
+        this.floor = floor;
+        this.checkedIn = checkedIn;
+        this.roomType = roomType;
+        this.pricePerDay = pricePerDay;
+    }
+
+
+    public Room() {
+        this.roomNumber = roomNumber;
+        this.floor = floor;
+        this.checkedIn = checkedIn;
+        this.roomType = roomType;
+        this.pricePerDay = pricePerDay;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public Guest getCheckedIn( ) {
+        return checkedIn;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public double getPricePerDay() {
+        return pricePerDay;
+    }
+
+    public void setCheckedIn(Guest checkedIn) {
+        this.checkedIn = checkedIn;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomNumber=" + roomNumber +
+                ", floor=" + floor +
+                ", checkedIn=" + checkedIn +
+                ", roomType='" + roomType + '\'' +
+                ", pricePerDay=" + pricePerDay +
+                '}';
+    }
+
+
+}
+import java.util.Arrays;
+
+
+
+
+public class Hotel {
+
+    private String name;
+    private Room[] rooms;
+
+    public Hotel(String name) {
+        this.name = name;
+        this.rooms = new Room[8];
+    }
+
+    public void addRoom(Room room) {
+        this.rooms[room.getRoomNumber() - 1] = room;
+    }
+
+    public Guest findGuestCheckedInRoom(int roomId) {
+        return this.rooms[roomId - 1].getCheckedIn();
+    }
+
+    public int guestsCount() {
+        int count = 0;
+        for (Room room : this.rooms) {
+            if (room.getCheckedIn() != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public double earningToday() {
+        double earning = 0;
+        for (Room room : this.rooms) {
+            if (room.getCheckedIn() != null) {
+                earning += room.getPricePerDay();
+            }
+        }
+        return earning;
+    }
+
+    public Guest[] findAllGuests() {
+        Guest[] guests = new Guest[this.guestsCount()];
+        int i = 0;
+        for (Room room : this.rooms) {
+            if (room.getCheckedIn() != null) {
+                guests[i] = room.getCheckedIn();
+                i++;
+            }
+        }
+        return guests;
+    }
+
+    public double getEarningTodayForRoomsWhereGuestIsStaying() {
+        double earning = 0;
+        for (Room room : this.rooms) {
+            if (room.getCheckedIn() != null) {
+                earning += room.getPricePerDay();
+           }
+        }
+        return earning;
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "name='" + name + '\'' +
+                ", rooms=" + Arrays.toString(rooms) +
+                '}';
+
+    }
+}
+
